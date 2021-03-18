@@ -3,7 +3,7 @@ var params = {
     Sand: 100,
     Download_Image: function () { return save(); },
 };
-gui.add(params, "Sand", 0, 5000, 1);
+gui.add(params, "Sand", 0, 3000, 1);
 gui.add(params, "Download_Image");
 var Chladni = (function () {
     function Chladni(num, freqNum, freqDen) {
@@ -13,13 +13,44 @@ var Chladni = (function () {
     }
     return Chladni;
 }());
+function vibrationValues(c) {
+    var NUM = c.num;
+    var FREQ_NUM = c.freqNum;
+    var FREQ_DEN = c.freqDen;
+    var SPREAD_X = Math.random() * width;
+    var SPREAD_Y = Math.random() * height;
+    var vibrationsV;
+    for (var y = 0; y < height; y++) {
+        for (var x = 0; x < width; x++) {
+            var SCALED_X = (x * FREQ_DEN) + SPREAD_X;
+            var SCALED_Y = (y * FREQ_DEN) + SPREAD_Y;
+            var NUM_X = NUM * SCALED_X;
+            var NUM_Y = NUM * SCALED_Y;
+            var FREQ_NUM_X = FREQ_NUM * SPREAD_X;
+            var FREQ_NUM_Y = FREQ_NUM * SPREAD_Y;
+            var chladni = (Math.cos(FREQ_NUM_X) * Math.cos(NUM_Y)) - ((Math.cos(NUM_X)) * Math.cos(FREQ_NUM_Y));
+            chladni /= 2;
+            chladni *= sign(chladni);
+            var i = (y * width) + x;
+            vibrationsV[i] = chladni;
+        }
+    }
+}
+function sign(n) {
+    if (n < 0) {
+        return -1;
+    }
+    if (n == 0) {
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
 function draw() {
     background(0);
-    var x = random(100, width - 100);
-    var y = random(100, height - 100);
-    for (var i = 0; i < params.Sand; i++) {
-        ellipse(x, y, 5);
-    }
+    var c = new Chladni(2, 2, 0.04);
+    vibrationValues(c);
 }
 function setup() {
     p6_CreateCanvas();
