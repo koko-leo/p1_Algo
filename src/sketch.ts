@@ -23,6 +23,7 @@ class Chladni {
         this.freqDen = freqDen;
     }
 }
+const vibrationsV = new Array(); 
 
 function vibrationValues(c: Chladni) {
 
@@ -32,8 +33,7 @@ function vibrationValues(c: Chladni) {
     const SPREAD_X = Math.random() * width;
     const SPREAD_Y = Math.random() * height;
 
-    let vibrationsV: Array<number>;
-    
+       
     for(let y= 0; y < height ; y++){
         for(let x = 0; x < width; x++){
             
@@ -52,11 +52,61 @@ function vibrationValues(c: Chladni) {
 
             const i = (y * width) + x;
 
-            vibrationsV[i] = chladni;
+            this.vibrationsV[i] = chladni;
         }
     }
 
 }
+function computeGradients() {
+    const gradients :  Array<number> = [0];
+    for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+            const myIndex = y * width + x;
+            const gradientIndex = myIndex << 1;
+            const myVibration = this.vibrationV[myIndex];
+
+            if (myVibration < (1e-2)) {
+                
+                gradients[gradientIndex] = 0;
+                gradients[gradientIndex + 1] = 0;
+                continue;
+            }
+
+            let candidateGradients = [];
+            candidateGradients.push([0, 0]);
+
+            let minVibrationSoFar = Number.POSITIVE_INFINITY;
+            for (let ny = -1; ny <= 1; ny++) {
+                for (let nx = -1; nx <= 1; nx++) {
+                    if (nx === 0 && ny === 0) {
+                        continue;  
+                    }
+
+                    const ni = (y + ny) * width + (x + nx);
+                    const nv = this.vibrationV[ni];
+
+                    // if neighbor has *same* vibration as minimum so far, consider it as well to avoid biasing
+                    if (nv <= minVibrationSoFar) {
+                        // intentionally not normalizing by length here (very expensive *and* useless)
+
+                        if (nv < minVibrationSoFar) {
+                            minVibrationSoFar = nv;
+                            candidateGradients = [];
+                        }
+                        candidateGradients.push([nx, ny]);
+                    }
+                }
+            }
+
+            const chosenGradient = candidateGradients.length === 1 ? candidateGradients[0] :
+                candidateGradients[Math.floor(Math.random() * candidateGradients.length)];  // to avoid biasing
+
+            gradients[gradientIndex] = chosenGradient[0];
+            gradients[gradientIndex + 1] = chosenGradient[1];
+        }
+    }
+}
+
 
 function sign(n: number) {
     if(n < 0) {
@@ -78,13 +128,14 @@ function draw() {
     background(0)
     
     let c = new Chladni(2, 2, 0.04);
-    vibrationValues(c);
+    vibrationValues(c); 
+    computeGradients();
     
-    /*for(let i= 0; i<params.Sand; i++){
+    for(let i= 0; i<params.Sand; i++){
         var x = random(100, width - 100);
         var y = random(100, height - 100);
         ellipse(x, y, 2);
-    }*/
+    }
 }
 
 
