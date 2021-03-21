@@ -10,6 +10,8 @@ const params = {
 gui.add(params, "Sand", 0, 3000, 1)
 gui.add(params, "Download_Image")
 
+const widthW = 2000;
+const heightW= 4000;
 
 
 class Chladni {
@@ -23,7 +25,7 @@ class Chladni {
         this.freqDen = freqDen;
     }
 }
-const vibrationsV = new Array(); 
+const vibrationsV = new Array(widthW* heightW);
 
 function vibrationValues(c: Chladni) {
 
@@ -34,8 +36,8 @@ function vibrationValues(c: Chladni) {
     const SPREAD_Y = Math.random() * height;
 
        
-    for(let y= 0; y < height ; y++){
-        for(let x = 0; x < width; x++){
+    for(let y= 0; y < heightW ; y++){
+        for(let x = 0; x < widthW; x++){
             
             const SCALED_X = (x * FREQ_DEN) + SPREAD_X;
             const SCALED_Y = (y * FREQ_DEN) + SPREAD_Y;
@@ -49,19 +51,20 @@ function vibrationValues(c: Chladni) {
             let chladni = (Math.cos(FREQ_NUM_X) * Math.cos(NUM_Y)) - ((Math.cos(NUM_X)) * Math.cos(FREQ_NUM_Y));
             chladni /=2;
             chladni *= sign(chladni);
+            ellipse(chladni,chladni,2);
 
-            const i = (y * width) + x;
+            const i = (y * widthW) + x;
 
             this.vibrationsV[i] = chladni;
         }
     }
 
 }
-function computeGradients() {
+/*function computeGradients() {
     const gradients :  Array<number> = [0];
-    for (let y = 1; y < height - 1; y++) {
-        for (let x = 1; x < width - 1; x++) {
-            const myIndex = y * width + x;
+    for (let y = 1; y < heightW - 1; y++) {
+        for (let x = 1; x < widthW - 1; x++) {
+            const myIndex = 1;//y * widthW -1;
             const gradientIndex = myIndex << 1;
             const myVibration = this.vibrationV[myIndex];
 
@@ -105,7 +108,7 @@ function computeGradients() {
             gradients[gradientIndex + 1] = chosenGradient[1];
         }
     }
-}
+}*/
 
 
 function sign(n: number) {
@@ -129,13 +132,9 @@ function draw() {
     
     let c = new Chladni(2, 2, 0.04);
     vibrationValues(c); 
-    computeGradients();
+    //computeGradients();
     
-    for(let i= 0; i<params.Sand; i++){
-        var x = random(100, width - 100);
-        var y = random(100, height - 100);
-        ellipse(x, y, 2);
-    }
+  
 }
 
 
@@ -144,7 +143,7 @@ function draw() {
 // -------------------
 
 function setup() {
-    p6_CreateCanvas()
+    createCanvas(2000,4000);
 }
 
 function windowResized() {

@@ -5,6 +5,8 @@ var params = {
 };
 gui.add(params, "Sand", 0, 3000, 1);
 gui.add(params, "Download_Image");
+var widthW = 2000;
+var heightW = 4000;
 var Chladni = (function () {
     function Chladni(num, freqNum, freqDen) {
         this.num = num;
@@ -13,15 +15,15 @@ var Chladni = (function () {
     }
     return Chladni;
 }());
-var vibrationsV = new Array();
+var vibrationsV = new Array(widthW * heightW);
 function vibrationValues(c) {
     var NUM = c.num;
     var FREQ_NUM = c.freqNum;
     var FREQ_DEN = c.freqDen;
     var SPREAD_X = Math.random() * width;
     var SPREAD_Y = Math.random() * height;
-    for (var y = 0; y < height; y++) {
-        for (var x = 0; x < width; x++) {
+    for (var y = 0; y < heightW; y++) {
+        for (var x = 0; x < widthW; x++) {
             var SCALED_X = (x * FREQ_DEN) + SPREAD_X;
             var SCALED_Y = (y * FREQ_DEN) + SPREAD_Y;
             var NUM_X = NUM * SCALED_X;
@@ -31,46 +33,9 @@ function vibrationValues(c) {
             var chladni = (Math.cos(FREQ_NUM_X) * Math.cos(NUM_Y)) - ((Math.cos(NUM_X)) * Math.cos(FREQ_NUM_Y));
             chladni /= 2;
             chladni *= sign(chladni);
-            var i = (y * width) + x;
+            ellipse(chladni, chladni, 2);
+            var i = (y * widthW) + x;
             this.vibrationsV[i] = chladni;
-        }
-    }
-}
-function computeGradients() {
-    var gradients = [0];
-    for (var y = 1; y < height - 1; y++) {
-        for (var x = 1; x < width - 1; x++) {
-            var myIndex = y * width + x;
-            var gradientIndex = myIndex << 1;
-            var myVibration = this.vibrationV[myIndex];
-            if (myVibration < (1e-2)) {
-                gradients[gradientIndex] = 0;
-                gradients[gradientIndex + 1] = 0;
-                continue;
-            }
-            var candidateGradients = [];
-            candidateGradients.push([0, 0]);
-            var minVibrationSoFar = Number.POSITIVE_INFINITY;
-            for (var ny = -1; ny <= 1; ny++) {
-                for (var nx = -1; nx <= 1; nx++) {
-                    if (nx === 0 && ny === 0) {
-                        continue;
-                    }
-                    var ni = (y + ny) * width + (x + nx);
-                    var nv = this.vibrationV[ni];
-                    if (nv <= minVibrationSoFar) {
-                        if (nv < minVibrationSoFar) {
-                            minVibrationSoFar = nv;
-                            candidateGradients = [];
-                        }
-                        candidateGradients.push([nx, ny]);
-                    }
-                }
-            }
-            var chosenGradient = candidateGradients.length === 1 ? candidateGradients[0] :
-                candidateGradients[Math.floor(Math.random() * candidateGradients.length)];
-            gradients[gradientIndex] = chosenGradient[0];
-            gradients[gradientIndex + 1] = chosenGradient[1];
         }
     }
 }
@@ -89,15 +54,9 @@ function draw() {
     background(0);
     var c = new Chladni(2, 2, 0.04);
     vibrationValues(c);
-    computeGradients();
-    for (var i = 0; i < params.Sand; i++) {
-        var x = random(100, width - 100);
-        var y = random(100, height - 100);
-        ellipse(x, y, 2);
-    }
 }
 function setup() {
-    p6_CreateCanvas();
+    createCanvas(2000, 4000);
 }
 function windowResized() {
     p6_ResizeCanvas();
