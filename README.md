@@ -1,36 +1,30 @@
 # p5 template project
 
-## Installing
+Forked from [https://github.com/Gaweph/p5-typescript-starter](https://github.com/Gaweph/p5-typescript-starter)
 
-- Install Node ([https://nodejs.org/](https://nodejs.org/)). Choose the LTS version (or the Current, it doesn't matter).
-- Install a good IDE if you don't have one already. I do highly recommend VS Code ([https://code.visualstudio.com/](https://code.visualstudio.com/)).
-- Download this repository (Use the green "Code" button at the top of the page -> "Download ZIP")
-- Extract the ZIP you just downloaded
-- Open the extracted folder in your IDE (like VS Code)
-- Open a terminal at the root of the folder (you can do it in VS Code by simply dragging up the bottom of the window) and type the following command :
+## Getting Started
 
-For Windows :
+You will need to have Node installed ([https://nodejs.org/](https://nodejs.org/))  
+Download this repository and open it in your favorite IDE (I would **highly** recommend VS Code ([https://code.visualstudio.com/](https://code.visualstudio.com/)))  
+Also, to get autocompletion and other great stuff for the shaders, I would recommend installing the "WebGL GLSL Editor" VS Code extension by Rácz Zalán  
+Then open a terminal at the root of the folder (you can do it in VS Code by simply dragging up the bottom of the window) and type the following commands :
+
+### Installing
+
 ```
 npm i -g npm-run-all typescript browser-sync
-```
-
-For Linux and Mac :
-```
-sudo npm i -g npm-run-all typescript browser-sync
 ```
 
 Only use this command the first time you ever use this template (-g means you install things globally)
 
 ### Launching
 
-Whenever you want to work on your project, simply launch it with
-
 ```
 npm start
 ```
 
 A local version will now be running at [localhost:3000](http://localhost:3000)  
-You can now write all the p5 things you want in __*src/sketch.ts*__
+You can now write all the p5 things you want in __*src/sketch.ts*__, and your fragment shader in __*shader/myShader.frag*__
 
 ### Publishing online
 
